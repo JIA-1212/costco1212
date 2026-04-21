@@ -201,22 +201,6 @@
                 <button onclick="openSettings()" class="mt-4 text-costco-blue hover:underline font-medium">設定 Google Sheets API</button>
             </div>
         </div>
-        
-        <!-- 使用說明 -->
-        <div class="mt-8 bg-blue-50 rounded-xl p-6 text-sm text-blue-800">
-            <h3 class="font-bold text-lg mb-2 flex items-center gap-2"><i class="ph ph-google-logo text-xl"></i> 如何設定 Google Sheets 連線？</h3>
-            <ol class="list-decimal pl-5 space-y-1 mb-3">
-                <li>建立一個 Google 試算表，第一列必須是標題：<code>日期, 商品, 金額, 數量, 優惠折扣, 折扣後金額</code>。</li>
-                <li><strong>最重要的一步：</strong>將該試算表的共用設定改為<strong>「知道連結的任何人都可以查看」</strong>。</li>
-                <li>點擊網頁右上角的「API 設定」，輸入你的 <strong>試算表 ID</strong> (在網址列 <code>/d/</code> 和 <code>/edit</code> 之間的一串字元，或是直接貼上完整網址)。</li>
-                <li><strong>API 金鑰為選填：</strong>免金鑰即可讀取公開的試算表。若未來你想限制存取權限或大量讀取，可再前往 Google Cloud 申請 API Key 並填入。</li>
-            </ol>
-            <div class="mt-4 p-3 bg-yellow-100 border border-yellow-200 rounded-lg text-yellow-800">
-                <strong>⚠️ 企業 / 學校帳號注意：</strong><br>
-                如果你使用的是 Google Workspace (公司或學校配發的帳號)，管理員可能會限制「禁止將檔案分享給機構外部」。在這種情況下，免金鑰模式一定會失敗（會被要求登入）。解決辦法是：<strong>改用一般個人的 Gmail 帳號建立試算表</strong>，或是<strong>申請 API 金鑰來讀取</strong>。
-            </div>
-            <p class="text-gray-600 text-xs mt-2">* 設定會儲存在你目前瀏覽器的 localStorage 中，不會上傳到任何其他伺服器。</p>
-        </div>
 
         <!-- API 設定 Modal -->
         <div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
