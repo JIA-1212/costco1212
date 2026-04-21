@@ -193,7 +193,7 @@
             <div id="emptyState" class="hidden flex-col items-center justify-center py-12 text-gray-500 text-center px-4">
                 <i class="ph ph-magnifying-glass text-6xl text-gray-300 mb-4"></i>
                 <p class="text-lg mb-2">找不到符合的記錄或尚未載入資料</p>
-                <p class="text-sm text-gray-400 max-w-md">如果一直載入失敗，請確認程式碼中的 DEFAULT_SHEET_ID 試算表 ID 是否正確，以及共用權限是否已設為「知道連結的任何人」。</p>
+                <p class="text-sm text-gray-400 max-w-md">如果一直載入失敗，請確認程式碼中的 OBFUSCATED_SHEET_ID 是否正確，以及共用權限是否已設為「知道連結的任何人」。</p>
             </div>
         </div>
 
@@ -207,11 +207,17 @@
 
     <script>
         // ==========================================
-        // 💡 開發者設定區：你可以直接在這裡「寫死」預設的資料庫
+        // 💡 開發者設定區：隱藏真實的試算表 ID
         // ==========================================
-        // ★ 1. 將你的試算表 ID 貼在單引號內，例如: '1qpyC0XzvTcKT6EISywvq2R...'
-        // 只要填寫了這裡，以後打開網頁就會自動連線到你的試算表！
-        const DEFAULT_SHEET_ID = '17a9hSVAKGnwBK3hbRoT-NVhlfJsjLVOBKeBZT2YE66k'; 
+        // ★ 1. 將你的真實試算表 ID 轉換為「Base64 亂碼」後，貼在下方單引號內。
+        // 如何轉換？打開隨便一個網頁，按 F12 打開開發者工具的 Console(主控台)
+        // 輸入：btoa('你的真實ID') 然後按下 Enter，就會得到一串英數亂碼。
+        // 把那串亂碼貼到這裡，別人直接看程式碼就不會一眼認出你的 ID！
+        
+        const OBFUSCATED_SHEET_ID = 'MTdhOWhTVkFLR253QkszaGJSb1QtTlZobGZKc2pMVk9CS2VCWlQyWUU2Nms='; 
+        
+        // 系統會在這裡自動幫你把亂碼解碼回真實的 ID
+        const DEFAULT_SHEET_ID = OBFUSCATED_SHEET_ID ? atob(OBFUSCATED_SHEET_ID) : '';
         
         // ★ 2. 預設的工作表名稱與範圍 (如果你有多個工作表，可用逗號隔開)
         const DEFAULT_RANGE = '工作表1!A:F'; 
@@ -482,7 +488,7 @@
             sheetConfig.sheetId = extractSheetId(sheetConfig.sheetId);
 
             if (!sheetConfig.sheetId) {
-                showMessage('請先在程式碼的 DEFAULT_SHEET_ID 中設定試算表 ID', 'error');
+                showMessage('請先在程式碼的 OBFUSCATED_SHEET_ID 中填寫轉換後的亂碼 ID', 'error');
                 return;
             }
 
@@ -506,7 +512,7 @@
                         url = `https://docs.google.com/spreadsheets/d/${sheetConfig.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
                     }
 
-                    console.log(`正在請求: ${url}`);
+                    console.log(`正在請求資料...`);
                     const response = await fetch(url);
                     const text = await response.text();
                     let currentSheetData = [];
@@ -534,9 +540,8 @@
                         if (text.trim().startsWith('<')) {
                             throw new Error(
                                 `<strong>讀取 ${currentRange} 失敗。</strong><br>` +
-                                `<span class="text-xs mt-1 block text-gray-500">解析到的 ID: ${sheetConfig.sheetId.substring(0, 10)}...</span><br>` +
                                 `請確認：<br>` + 
-                                `1. 程式碼中的試算表 ID 是否正確。<br>` + 
+                                `1. 轉換前的真實試算表 ID 是否正確。<br>` + 
                                 `2. 共用權限已設為「知道連結的任何人都可以查看」。<br>` +
                                 `⚠️ 若您使用企業或學校帳號，管理員可能限制檔案對外公開。`
                             );
