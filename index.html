@@ -239,6 +239,20 @@
     </main>
 
     <script>
+        // ==========================================
+        // 💡 開發者設定區：你可以直接在這裡「寫死」預設的資料庫
+        // ==========================================
+        // ★ 1. 將你的試算表 ID 貼在單引號內，例如: '1qpyC0XzvTcKT6EISywvq2R...'
+        // 只要填寫了這裡，以後打開網頁就會自動連線到你的試算表！
+        const DEFAULT_SHEET_ID = '17a9hSVAKGnwBK3hbRoT-NVhlfJsjLVOBKeBZT2YE66k'; 
+        
+        // ★ 2. 預設的工作表名稱與範圍 (如果你有多個工作表，可用逗號隔開)
+        const DEFAULT_RANGE = '工作表1!A:F'; 
+        
+        // ★ 3. (選填) 若有申請 API Key 可寫在這裡
+        const DEFAULT_API_KEY = ''; 
+
+
         // --- 1. 狀態與設定資料 ---
         // 預設提供幾筆測試資料，增加重複購買記錄以測試漲跌功能
         let purchaseData = [
@@ -262,10 +276,11 @@
         let currentPage = 1;
         const itemsPerPage = 10;
         
+        // 優先讀取瀏覽器紀錄，若無則讀取上方的「開發者設定區」變數
         let sheetConfig = {
-            apiKey: localStorage.getItem('costco_apiKey') || '',
-            sheetId: localStorage.getItem('costco_sheetId') || '',
-            range: localStorage.getItem('costco_range') || '工作表1!A:F'
+            apiKey: localStorage.getItem('costco_apiKey') || DEFAULT_API_KEY,
+            sheetId: localStorage.getItem('costco_sheetId') || DEFAULT_SHEET_ID,
+            range: localStorage.getItem('costco_range') || DEFAULT_RANGE
         };
 
         // --- 工具函數：安全提取試算表 ID ---
@@ -533,7 +548,10 @@
         // 從 Google Sheets 載入資料
         const loadFromGoogleSheets = async () => {
             sheetConfig.sheetId = extractSheetId(sheetConfig.sheetId);
-            localStorage.setItem('costco_sheetId', sheetConfig.sheetId);
+            // 只在有手動輸入過的時候才存進 localStorage
+            if (sheetConfig.sheetId && sheetConfig.sheetId !== DEFAULT_SHEET_ID) {
+                localStorage.setItem('costco_sheetId', sheetConfig.sheetId);
+            }
 
             if (!sheetConfig.sheetId) {
                 openSettings();
